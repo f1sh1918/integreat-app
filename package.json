@@ -6,6 +6,7 @@
     "packages": [
       "native",
       "web",
+      "web-ts",
       "e2e-tests",
       "api-client",
       "translations",
@@ -14,6 +15,7 @@
     "nohoist": [
       "native/**",
       "web/**",
+      "web-ts/**",
       "api-client/**",
       "translations/**",
       "build-configs/**"
@@ -30,6 +32,7 @@
     "moment": "2.29.1"
   },
   "devDependencies": {
+    "@khanacademy/flow-to-ts": "^0.5.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
