@@ -8,7 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin')
-const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
+// const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 // const babelConfig = require('../babel.config.js')
 const fs = require('fs')
 // const translations = require('translations')
@@ -82,8 +82,9 @@ const createConfig = (
   process.env.NODE_ENV = NODE_ENV
 
   // If version_name is not supplied read it from version file
-  const versionName = passedVersionName ?? readVersionName()
-  const shortCommitSha = passedCommitSha?.substring(0, SHORT_COMMIT_SHA_LENGTH) ?? 'Commit SHA unknown'
+  const versionName = passedVersionName || readVersionName()
+  // const shortCommitSha = passedCommitSha.substring(0, SHORT_COMMIT_SHA_LENGTH) || 'Commit SHA unknown'
+  const shortCommitSha = 'Commit SHA unknown'
 
   console.log('Used config: ', buildConfigName)
   console.log('Configured as running in dev server: ', !devServer)
@@ -163,9 +164,9 @@ const createConfig = (
         title: 'App Name',
         // Load a custom template (lodash by default)
         template: 'index.ejs',
-        templateParameters: {
-          config: buildConfig
-        }
+        // templateParameters: {
+        //   config: buildConfig
+        // }
       }),
       new CopyPlugin({
         patterns: [
@@ -174,7 +175,7 @@ const createConfig = (
           {
             from: manifestPreset,
             to: distDirectory,
-            transform(content: string, _: string): string {
+            transform(content, _) {
               return generateManifest(content, buildConfigName)
             }
           }
@@ -185,7 +186,7 @@ const createConfig = (
         __VERSION_NAME__: JSON.stringify(versionName),
         __COMMIT_SHA__: JSON.stringify(shortCommitSha),
         __BUILD_CONFIG_NAME__: JSON.stringify(buildConfigName),
-        __BUILD_CONFIG__: JSON.stringify(buildConfig)
+        // __BUILD_CONFIG__: JSON.stringify(buildConfig)
       }),
       // Emit a JSON file with assets paths
       // https://github.com/sporto/assets-webpack-plugin#options
@@ -205,10 +206,10 @@ const createConfig = (
         endYear: currentYear + 2
       }),
       // moment has no support for 'ti' (Tigrinya) and 'so' (Somali), hence we have to use the ignoreInvalidLocales flag
-      new MomentLocalesPlugin({
-        localesToKeep: translations.config.getSupportedLanguageTags(),
-        ignoreInvalidLocales: true
-      })
+      // new MomentLocalesPlugin({
+      //   localesToKeep: translations.config.getSupportedLanguageTags(),
+      //   ignoreInvalidLocales: true
+      // })
     ],
     module: {
       rules: [
@@ -217,15 +218,15 @@ const createConfig = (
           use: 'ts-loader',
           exclude: /node_modules/,
         },
-        {
-          test: /\.jsx?$/,
-          // https://github.com/webpack/webpack/issues/2031#issuecomment-219040479
-          // Packages mentioned here probably use ES6 syntax which IE11 does not support. This is a problem because
-          // in development mode webpack bundles the mentioned packages
-          exclude: /node_modules\/(?!(strict-uri-encode|strip-ansi|build-configs|api-client)\/).*/,
-          loader: 'babel-loader',
-          options: babelConfig
-        },
+        // {
+        //   test: /\.jsx?$/,
+        //   // https://github.com/webpack/webpack/issues/2031#issuecomment-219040479
+        //   // Packages mentioned here probably use ES6 syntax which IE11 does not support. This is a problem because
+        //   // in development mode webpack bundles the mentioned packages
+        //   exclude: /node_modules\/(?!(strict-uri-encode|strip-ansi|build-configs|api-client)\/).*/,
+        //   loader: 'babel-loader',
+        //   options: babelConfig
+        // },
         {
           test: /\.html$/,
           use: [
